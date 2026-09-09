@@ -14,7 +14,7 @@
       font-family: 'Helvetica Neue', Arial, sans-serif;
     }
 
-    /* Fixed UI Overlay Controls */
+   /* Fixed UI Overlay Controls */
     .controls-overlay {
       position: fixed;
       top: 12px;
@@ -27,6 +27,9 @@
       border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.3);
       backdrop-filter: blur(4px);
+      touch-action: manipulation; /* Prevents Android browser zoom on double tap */
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     .ui-btn {
@@ -34,13 +37,13 @@
       color: #ffffff;
       border: 1px solid #475569;
       border-radius: 5px;
-      padding: 8px 14px;
-      font-size: 14px;
+      padding: 10px 16px; /* Larger tap targets for mobile fingers */
+      font-size: 16px;
       font-weight: bold;
       cursor: pointer;
       user-select: none;
+      -webkit-tap-highlight-color: transparent; /* Removes default grey highlight on Android */
       touch-action: manipulation;
-      transition: background-color 0.15s ease;
     }
 
     .ui-btn:active, .ui-btn:hover {
@@ -81,9 +84,9 @@
 
   <!-- FIXED FLOATING HTML CONTROLS -->
   <div class="controls-overlay">
-    <button class="ui-btn" onclick="zoom(0.8)">+</button>
-    <button class="ui-btn" onclick="zoom(1.25)">−</button>
-    <button class="ui-btn" onclick="resetZoom()">RESET</button>
+    <button class="ui-btn" onpointerdown="event.stopPropagation(); zoom(0.8);">+</button>
+    <button class="ui-btn" onpointerdown="event.stopPropagation(); zoom(1.25);">−</button>
+    <button class="ui-btn" onpointerdown="event.stopPropagation(); resetZoom();">RESET</button>
   </div>
 
 <svg id="main-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1100 960">
