@@ -1,10 +1,61 @@
 <!doctype html>
 <html>
-<body>
-
-
-<svg id="main-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1100 960" width="100%" height="100%" style="background-color: #ffffff; font-family: 'Helvetica Neue', Arial, sans-serif; user-select: none; cursor: grab;">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #ffffff;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    /* Fixed UI Overlay Controls */
+    .controls-overlay {
+      position: fixed;
+      top: 12px;
+      right: 12px;
+      z-index: 9999;
+      display: flex;
+      gap: 6px;
+      background: rgba(15, 23, 42, 0.85);
+      padding: 6px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      backdrop-filter: blur(4px);
+    }
+
+    .ui-btn {
+      background-color: #1e293b;
+      color: #ffffff;
+      border: 1px solid #475569;
+      border-radius: 5px;
+      padding: 8px 14px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      touch-action: manipulation;
+      transition: background-color 0.15s ease;
+    }
+
+    .ui-btn:active, .ui-btn:hover {
+      background-color: #dc2626;
+      border-color: #dc2626;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      user-select: none;
+      cursor: grab;
+      touch-action: none; /* Prevents browser handling default pinch/scroll */
+    }
+
     /* ARRL Style Layout Typography */
     .chart-title { fill: #000000; font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
     .chart-subtitle { fill: #b91c1c; font-size: 14px; font-weight: 700; text-transform: uppercase; }
@@ -24,17 +75,23 @@
     .popup-title { fill: #fef08a; font-size: 13px; font-weight: 800; }
     .popup-body { fill: #f8fafc; font-size: 11px; font-weight: 400; }
     .popup-bold { fill: #38bdf8; font-size: 11px; font-weight: 700; }
-
-    /* UI Controls */
-    .zoom-btn { cursor: pointer; fill: #1e293b; transition: fill 0.2s; }
-    .zoom-btn:hover { fill: #dc2626; }
-    .btn-text { fill: #ffffff; font-size: 16px; font-weight: bold; pointer-events: none; text-anchor: middle; dominant-baseline: central; }
   </style>
+</head>
+<body>
+
+  <!-- FIXED FLOATING HTML CONTROLS -->
+  <div class="controls-overlay">
+    <button class="ui-btn" onclick="zoom(0.8)">+</button>
+    <button class="ui-btn" onclick="zoom(1.25)">−</button>
+    <button class="ui-btn" onclick="resetZoom()">RESET</button>
+  </div>
+
+<svg id="main-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1100 960">
 
   <!-- ARRL HEADER BLOCK -->
   <rect x="20" y="20" width="1060" height="70" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" rx="4"/>
   <text x="40" y="50" class="chart-title">CUADRO DE BANDAS DE RADIOAFICIONADO EN ESPAÑA</text>
-  <text x="40" y="72" class="chart-subtitle">• IARU REGIÓN 1 / CNAF • CLASE ÚNICA (HAREC)</text>
+  <text x="40" y="72" class="chart-subtitle">FORMATO ESTILO ARRL • IARU REGIÓN 1 / CNAF • CLASE ÚNICA (HAREC)</text>
   <text x="960" y="42" font-size="11" font-weight="bold" fill="#000" text-anchor="middle">POTENCIA HF MÁXIMA:</text>
   <text x="960" y="62" font-size="14" font-weight="900" fill="#b91c1c" text-anchor="middle">1000 W PEP</text>
 
@@ -46,10 +103,10 @@
       <text x="60" y="-5" class="freq-marker">1.810 MHz</text>
       <text x="810" y="-5" class="freq-marker">2.000 MHz</text>
       <text x="830" y="28" class="power-label">200 W PEP</text>
-      <rect class="segment" x="60" y="5" width="112" height="36" fill="#ef4444" onmouseover="showPopup('p-160-cw')" onmouseout="hidePopup('p-160-cw')" />
+      <rect class="segment" x="60" y="5" width="112" height="36" fill="#ef4444" onmouseover="showPopup('p-160-cw')" onmouseout="hidePopup('p-160-cw')" onclick="togglePopup('p-160-cw')" />
       <text x="116" y="27" class="seg-text" text-anchor="middle">CW</text>
-      <rect class="segment" x="172" y="5" width="20" height="36" fill="#2563eb" onmouseover="showPopup('p-160-digi')" onmouseout="hidePopup('p-160-digi')" />
-      <rect class="segment" x="192" y="5" width="628" height="36" fill="#10b981" onmouseover="showPopup('p-160-phone')" onmouseout="hidePopup('p-160-phone')" />
+      <rect class="segment" x="172" y="5" width="20" height="36" fill="#2563eb" onmouseover="showPopup('p-160-digi')" onmouseout="hidePopup('p-160-digi')" onclick="togglePopup('p-160-digi')" />
+      <rect class="segment" x="192" y="5" width="628" height="36" fill="#10b981" onmouseover="showPopup('p-160-phone')" onmouseout="hidePopup('p-160-phone')" onclick="togglePopup('p-160-phone')" />
       <text x="506" y="27" class="seg-text" text-anchor="middle">1.840 - 2.000 MHz (FONÍA / TODOS LOS MODOS)</text>
     </g>
 
@@ -59,11 +116,11 @@
       <text x="60" y="-5" class="freq-marker">3.500 MHz</text>
       <text x="810" y="-5" class="freq-marker">3.800 MHz</text>
       <text x="830" y="28" class="power-label">1000 W PEP</text>
-      <rect class="segment" x="60" y="5" width="180" height="36" fill="#ef4444" onmouseover="showPopup('p-80-cw')" onmouseout="hidePopup('p-80-cw')" />
+      <rect class="segment" x="60" y="5" width="180" height="36" fill="#ef4444" onmouseover="showPopup('p-80-cw')" onmouseout="hidePopup('p-80-cw')" onclick="togglePopup('p-80-cw')" />
       <text x="150" y="27" class="seg-text" text-anchor="middle">3.500 - 3.570 (CW)</text>
-      <rect class="segment" x="240" y="5" width="76" height="36" fill="#2563eb" onmouseover="showPopup('p-80-digi')" onmouseout="hidePopup('p-80-digi')" />
+      <rect class="segment" x="240" y="5" width="76" height="36" fill="#2563eb" onmouseover="showPopup('p-80-digi')" onmouseout="hidePopup('p-80-digi')" onclick="togglePopup('p-80-digi')" />
       <text x="278" y="27" class="seg-text" text-anchor="middle">DIGI</text>
-      <rect class="segment" x="316" y="5" width="504" height="36" fill="#10b981" onmouseover="showPopup('p-80-phone')" onmouseout="hidePopup('p-80-phone')" />
+      <rect class="segment" x="316" y="5" width="504" height="36" fill="#10b981" onmouseover="showPopup('p-80-phone')" onmouseout="hidePopup('p-80-phone')" onclick="togglePopup('p-80-phone')" />
       <text x="568" y="27" class="seg-text" text-anchor="middle">3.600 - 3.800 MHz (FONÍA / ALL MODES)</text>
     </g>
 
@@ -73,11 +130,11 @@
       <text x="60" y="-5" class="freq-marker">5.3515 MHz</text>
       <text x="810" y="-5" class="freq-marker">5.3665 MHz</text>
       <text x="830" y="28" class="power-label">15 W PIRE</text>
-      <rect class="segment" x="60" y="5" width="130" height="36" fill="#ef4444" onmouseover="showPopup('p-60-cw')" onmouseout="hidePopup('p-60-cw')" />
+      <rect class="segment" x="60" y="5" width="130" height="36" fill="#ef4444" onmouseover="showPopup('p-60-cw')" onmouseout="hidePopup('p-60-cw')" onclick="togglePopup('p-60-cw')" />
       <text x="125" y="27" class="seg-text" text-anchor="middle">CW / NARROW</text>
-      <rect class="segment" x="190" y="5" width="590" height="36" fill="#10b981" onmouseover="showPopup('p-60-phone')" onmouseout="hidePopup('p-60-phone')" />
+      <rect class="segment" x="190" y="5" width="590" height="36" fill="#10b981" onmouseover="showPopup('p-60-phone')" onmouseout="hidePopup('p-60-phone')" onclick="togglePopup('p-60-phone')" />
       <text x="485" y="27" class="seg-text" text-anchor="middle">5.354 - 5.366 MHz (ALL MODES / USB)</text>
-      <rect class="segment" x="780" y="5" width="40" height="36" fill="#a855f7" onmouseover="showPopup('p-60-weak')" onmouseout="hidePopup('p-60-weak')" />
+      <rect class="segment" x="780" y="5" width="40" height="36" fill="#a855f7" onmouseover="showPopup('p-60-weak')" onmouseout="hidePopup('p-60-weak')" onclick="togglePopup('p-60-weak')" />
     </g>
 
     <!-- 40m -->
@@ -86,11 +143,11 @@
       <text x="60" y="-5" class="freq-marker">7.000 MHz</text>
       <text x="810" y="-5" class="freq-marker">7.200 MHz</text>
       <text x="830" y="28" class="power-label">1000 W PEP</text>
-      <rect class="segment" x="60" y="5" width="154" height="36" fill="#ef4444" onmouseover="showPopup('p-40-cw')" onmouseout="hidePopup('p-40-cw')" />
+      <rect class="segment" x="60" y="5" width="154" height="36" fill="#ef4444" onmouseover="showPopup('p-40-cw')" onmouseout="hidePopup('p-40-cw')" onclick="togglePopup('p-40-cw')" />
       <text x="137" y="27" class="seg-text" text-anchor="middle">7.000 - 7.040 (CW)</text>
-      <rect class="segment" x="214" y="5" width="38" height="36" fill="#2563eb" onmouseover="showPopup('p-40-digi')" onmouseout="hidePopup('p-40-digi')" />
+      <rect class="segment" x="214" y="5" width="38" height="36" fill="#2563eb" onmouseover="showPopup('p-40-digi')" onmouseout="hidePopup('p-40-digi')" onclick="togglePopup('p-40-digi')" />
       <text x="233" y="27" class="seg-text" text-anchor="middle">DIGI</text>
-      <rect class="segment" x="252" y="5" width="568" height="36" fill="#10b981" onmouseover="showPopup('p-40-phone')" onmouseout="hidePopup('p-40-phone')" />
+      <rect class="segment" x="252" y="5" width="568" height="36" fill="#10b981" onmouseover="showPopup('p-40-phone')" onmouseout="hidePopup('p-40-phone')" onclick="togglePopup('p-40-phone')" />
       <text x="536" y="27" class="seg-text" text-anchor="middle">7.050 - 7.200 MHz (FONÍA / ALL MODES)</text>
     </g>
 
@@ -100,9 +157,9 @@
       <text x="60" y="-5" class="freq-marker">10.100 MHz</text>
       <text x="810" y="-5" class="freq-marker">10.150 MHz</text>
       <text x="830" y="28" class="power-label">1000 W PEP</text>
-      <rect class="segment" x="60" y="5" width="450" height="36" fill="#ef4444" onmouseover="showPopup('p-30-cw')" onmouseout="hidePopup('p-30-cw')" />
+      <rect class="segment" x="60" y="5" width="450" height="36" fill="#ef4444" onmouseover="showPopup('p-30-cw')" onmouseout="hidePopup('p-30-cw')" onclick="togglePopup('p-30-cw')" />
       <text x="285" y="27" class="seg-text" text-anchor="middle">10.100 - 10.130 MHz (CW ONLY)</text>
-      <rect class="segment" x="510" y="5" width="310" height="36" fill="#2563eb" onmouseover="showPopup('p-30-digi')" onmouseout="hidePopup('p-30-digi')" />
+      <rect class="segment" x="510" y="5" width="310" height="36" fill="#2563eb" onmouseover="showPopup('p-30-digi')" onmouseout="hidePopup('p-30-digi')" onclick="togglePopup('p-30-digi')" />
       <text x="665" y="27" class="seg-text" text-anchor="middle">10.130 - 10.150 (DIGITAL MODES)</text>
     </g>
 
@@ -112,12 +169,12 @@
       <text x="60" y="-5" class="freq-marker">14.000 MHz</text>
       <text x="810" y="-5" class="freq-marker">14.350 MHz</text>
       <text x="830" y="28" class="power-label">1000 W PEP</text>
-      <rect class="segment" x="60" y="5" width="152" height="36" fill="#ef4444" onmouseover="showPopup('p-20-cw')" onmouseout="hidePopup('p-20-cw')" />
+      <rect class="segment" x="60" y="5" width="152" height="36" fill="#ef4444" onmouseover="showPopup('p-20-cw')" onmouseout="hidePopup('p-20-cw')" onclick="togglePopup('p-20-cw')" />
       <text x="136" y="27" class="seg-text" text-anchor="middle">14.000 - 14.070 (CW)</text>
-      <rect class="segment" x="212" y="5" width="64" height="36" fill="#2563eb" onmouseover="showPopup('p-20-digi')" onmouseout="hidePopup('p-20-digi')" />
+      <rect class="segment" x="212" y="5" width="64" height="36" fill="#2563eb" onmouseover="showPopup('p-20-digi')" onmouseout="hidePopup('p-20-digi')" onclick="togglePopup('p-20-digi')" />
       <text x="244" y="27" class="seg-text" text-anchor="middle">DIGI</text>
-      <rect class="segment" x="276" y="5" width="10" height="36" fill="#f59e0b" onmouseover="showPopup('p-20-beacon')" onmouseout="hidePopup('p-20-beacon')" />
-      <rect class="segment" x="286" y="5" width="534" height="36" fill="#10b981" onmouseover="showPopup('p-20-phone')" onmouseout="hidePopup('p-20-phone')" />
+      <rect class="segment" x="276" y="5" width="10" height="36" fill="#f59e0b" onmouseover="showPopup('p-20-beacon')" onmouseout="hidePopup('p-20-beacon')" onclick="togglePopup('p-20-beacon')" />
+      <rect class="segment" x="286" y="5" width="534" height="36" fill="#10b981" onmouseover="showPopup('p-20-phone')" onmouseout="hidePopup('p-20-phone')" onclick="togglePopup('p-20-phone')" />
       <text x="553" y="27" class="seg-text" text-anchor="middle">14.101 - 14.350 MHz (FONÍA / ALL MODES)</text>
     </g>
 
@@ -127,12 +184,12 @@
       <text x="60" y="-5" class="freq-marker">18.068 MHz</text>
       <text x="810" y="-5" class="freq-marker">18.168 MHz</text>
       <text x="830" y="28" class="power-label">1000 W PEP</text>
-      <rect class="segment" x="60" y="5" width="200" height="36" fill="#ef4444" onmouseover="showPopup('p-17-cw')" onmouseout="hidePopup('p-17-cw')" />
+      <rect class="segment" x="60" y="5" width="200" height="36" fill="#ef4444" onmouseover="showPopup('p-17-cw')" onmouseout="hidePopup('p-17-cw')" onclick="togglePopup('p-17-cw')" />
       <text x="160" y="27" class="seg-text" text-anchor="middle">18.068 - 18.095 (CW)</text>
-      <rect class="segment" x="260" y="5" width="100" height="36" fill="#2563eb" onmouseover="showPopup('p-17-digi')" onmouseout="hidePopup('p-17-digi')" />
+      <rect class="segment" x="260" y="5" width="100" height="36" fill="#2563eb" onmouseover="showPopup('p-17-digi')" onmouseout="hidePopup('p-17-digi')" onclick="togglePopup('p-17-digi')" />
       <text x="310" y="27" class="seg-text" text-anchor="middle">DIGI</text>
-      <rect class="segment" x="360" y="5" width="16" height="36" fill="#f59e0b" onmouseover="showPopup('p-17-beacon')" onmouseout="hidePopup('p-17-beacon')" />
-      <rect class="segment" x="376" y="5" width="444" height="36" fill="#10b981" onmouseover="showPopup('p-17-phone')" onmouseout="hidePopup('p-17-phone')" />
+      <rect class="segment" x="360" y="5" width="16" height="36" fill="#f59e0b" onmouseover="showPopup('p-17-beacon')" onmouseout="hidePopup('p-17-beacon')" onclick="togglePopup('p-17-beacon')" />
+      <rect class="segment" x="376" y="5" width="444" height="36" fill="#10b981" onmouseover="showPopup('p-17-phone')" onmouseout="hidePopup('p-17-phone')" onclick="togglePopup('p-17-phone')" />
       <text x="598" y="27" class="seg-text" text-anchor="middle">18.111 - 18.168 MHz (FONÍA / ALL MODES)</text>
     </g>
 
@@ -142,11 +199,11 @@
       <text x="60" y="-5" class="freq-marker">21.000 MHz</text>
       <text x="810" y="-5" class="freq-marker">21.450 MHz</text>
       <text x="830" y="28" class="power-label">1000 W PEP</text>
-      <rect class="segment" x="60" y="5" width="120" height="36" fill="#ef4444" onmouseover="showPopup('p-15-cw')" onmouseout="hidePopup('p-15-cw')" />
+      <rect class="segment" x="60" y="5" width="120" height="36" fill="#ef4444" onmouseover="showPopup('p-15-cw')" onmouseout="hidePopup('p-15-cw')" onclick="togglePopup('p-15-cw')" />
       <text x="120" y="27" class="seg-text" text-anchor="middle">21.000 - 21.070 (CW)</text>
-      <rect class="segment" x="180" y="5" width="70" height="36" fill="#2563eb" onmouseover="showPopup('p-15-digi')" onmouseout="hidePopup('p-15-digi')" />
+      <rect class="segment" x="180" y="5" width="70" height="36" fill="#2563eb" onmouseover="showPopup('p-15-digi')" onmouseout="hidePopup('p-15-digi')" onclick="togglePopup('p-15-digi')" />
       <text x="215" y="27" class="seg-text" text-anchor="middle">DIGI</text>
-      <rect class="segment" x="250" y="5" width="570" height="36" fill="#10b981" onmouseover="showPopup('p-15-phone')" onmouseout="hidePopup('p-15-phone')" />
+      <rect class="segment" x="250" y="5" width="570" height="36" fill="#10b981" onmouseover="showPopup('p-15-phone')" onmouseout="hidePopup('p-15-phone')" onclick="togglePopup('p-15-phone')" />
       <text x="535" y="27" class="seg-text" text-anchor="middle">21.110 - 21.450 MHz (FONÍA / ALL MODES)</text>
     </g>
 
@@ -156,12 +213,12 @@
       <text x="60" y="-5" class="freq-marker">24.890 MHz</text>
       <text x="810" y="-5" class="freq-marker">24.990 MHz</text>
       <text x="830" y="28" class="power-label">1000 W PEP</text>
-      <rect class="segment" x="60" y="5" width="190" height="36" fill="#ef4444" onmouseover="showPopup('p-12-cw')" onmouseout="hidePopup('p-12-cw')" />
+      <rect class="segment" x="60" y="5" width="190" height="36" fill="#ef4444" onmouseover="showPopup('p-12-cw')" onmouseout="hidePopup('p-12-cw')" onclick="togglePopup('p-12-cw')" />
       <text x="155" y="27" class="seg-text" text-anchor="middle">24.890 - 24.915 (CW)</text>
-      <rect class="segment" x="250" y="5" width="110" height="36" fill="#2563eb" onmouseover="showPopup('p-12-digi')" onmouseout="hidePopup('p-12-digi')" />
+      <rect class="segment" x="250" y="5" width="110" height="36" fill="#2563eb" onmouseover="showPopup('p-12-digi')" onmouseout="hidePopup('p-12-digi')" onclick="togglePopup('p-12-digi')" />
       <text x="305" y="27" class="seg-text" text-anchor="middle">DIGI</text>
-      <rect class="segment" x="360" y="5" width="15" height="36" fill="#f59e0b" onmouseover="showPopup('p-12-beacon')" onmouseout="hidePopup('p-12-beacon')" />
-      <rect class="segment" x="375" y="5" width="445" height="36" fill="#10b981" onmouseover="showPopup('p-12-phone')" onmouseout="hidePopup('p-12-phone')" />
+      <rect class="segment" x="360" y="5" width="15" height="36" fill="#f59e0b" onmouseover="showPopup('p-12-beacon')" onmouseout="hidePopup('p-12-beacon')" onclick="togglePopup('p-12-beacon')" />
+      <rect class="segment" x="375" y="5" width="445" height="36" fill="#10b981" onmouseover="showPopup('p-12-phone')" onmouseout="hidePopup('p-12-phone')" onclick="togglePopup('p-12-phone')" />
       <text x="597" y="27" class="seg-text" text-anchor="middle">24.931 - 24.990 MHz (FONÍA / ALL MODES)</text>
     </g>
 
@@ -171,15 +228,15 @@
       <text x="60" y="-5" class="freq-marker">28.000 MHz</text>
       <text x="810" y="-5" class="freq-marker">29.700 MHz</text>
       <text x="830" y="28" class="power-label">1000 W PEP</text>
-      <rect class="segment" x="60" y="5" width="31" height="36" fill="#ef4444" onmouseover="showPopup('p-10-cw')" onmouseout="hidePopup('p-10-cw')" />
-      <rect class="segment" x="91" y="5" width="53" height="36" fill="#2563eb" onmouseover="showPopup('p-10-digi')" onmouseout="hidePopup('p-10-digi')" />
+      <rect class="segment" x="60" y="5" width="31" height="36" fill="#ef4444" onmouseover="showPopup('p-10-cw')" onmouseout="hidePopup('p-10-cw')" onclick="togglePopup('p-10-cw')" />
+      <rect class="segment" x="91" y="5" width="53" height="36" fill="#2563eb" onmouseover="showPopup('p-10-digi')" onmouseout="hidePopup('p-10-digi')" onclick="togglePopup('p-10-digi')" />
       <text x="117" y="27" class="seg-text" text-anchor="middle">DIGI</text>
-      <rect class="segment" x="144" y="5" width="16" height="36" fill="#f59e0b" onmouseover="showPopup('p-10-beacon')" onmouseout="hidePopup('p-10-beacon')" />
-      <rect class="segment" x="160" y="5" width="475" height="36" fill="#10b981" onmouseover="showPopup('p-10-phone')" onmouseout="hidePopup('p-10-phone')" />
+      <rect class="segment" x="144" y="5" width="16" height="36" fill="#f59e0b" onmouseover="showPopup('p-10-beacon')" onmouseout="hidePopup('p-10-beacon')" onclick="togglePopup('p-10-beacon')" />
+      <rect class="segment" x="160" y="5" width="475" height="36" fill="#10b981" onmouseover="showPopup('p-10-phone')" onmouseout="hidePopup('p-10-phone')" onclick="togglePopup('p-10-phone')" />
       <text x="397" y="27" class="seg-text" text-anchor="middle">28.225 - 29.300 MHz (ALL MODES / SSB / FM SIMPLEX)</text>
-      <rect class="segment" x="635" y="5" width="93" height="36" fill="#0284c7" onmouseover="showPopup('p-10-sat')" onmouseout="hidePopup('p-10-sat')" />
+      <rect class="segment" x="635" y="5" width="93" height="36" fill="#0284c7" onmouseover="showPopup('p-10-sat')" onmouseout="hidePopup('p-10-sat')" onclick="togglePopup('p-10-sat')" />
       <text x="681" y="27" class="seg-text" text-anchor="middle">SATÉLITES</text>
-      <rect class="segment" x="728" y="5" width="92" height="36" fill="#64748b" onmouseover="showPopup('p-10-rep')" onmouseout="hidePopup('p-10-rep')" />
+      <rect class="segment" x="728" y="5" width="92" height="36" fill="#64748b" onmouseover="showPopup('p-10-rep')" onmouseout="hidePopup('p-10-rep')" onclick="togglePopup('p-10-rep')" />
       <text x="774" y="27" class="seg-text" text-anchor="middle">REPETIDORES FM</text>
     </g>
   </g>
@@ -198,18 +255,6 @@
     <text x="810" y="33" font-size="12" font-weight="bold" fill="#333">Balizas IBP</text>
     <rect x="910" y="18" width="22" height="22" rx="3" fill="#0284c7" />
     <text x="940" y="33" font-size="12" font-weight="bold" fill="#333">Satélites / FM</text>
-  </g>
-
-  <!-- REPOSITIONED ZOOM CONTROLS (Bottom touching box baseline y=90) -->
-  <g transform="translate(720, 52)">
-    <rect class="zoom-btn" x="0" y="0" width="32" height="32" rx="5" onclick="zoom(0.8)"/>
-    <text x="16" y="16" class="btn-text">+</text>
-    
-    <rect class="zoom-btn" x="38" y="0" width="32" height="32" rx="5" onclick="zoom(1.25)"/>
-    <text x="54" y="16" class="btn-text">-</text>
-
-    <rect class="zoom-btn" x="76" y="0" width="50" height="32" rx="5" onclick="resetZoom()"/>
-    <text x="101" y="16" class="btn-text" font-size="11">RESET</text>
   </g>
 
   <!-- TOPMOST POPUP LAYER -->
@@ -270,7 +315,7 @@
     <g id="p-10-rep" class="popup" transform="translate(560, 720)"><rect class="popup-bg" width="310" height="85"/><text x="12" y="20" class="popup-title">FM Repetidores &amp; Loro (29520 – 29700 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 6000 Hz | Entradas: 29520–29590 kHz</text><text x="12" y="54" class="popup-body">Llamada FM Simplex: 29600 kHz</text><text x="12" y="70" class="popup-bold">Repetidor Simplex (Loro): 29610 kHz</text></g>
   </g>
 
-  <!-- JAVASCRIPT FOR HOVER, ZOOM & PAN CONTROLS -->
+  <!-- JAVASCRIPT FOR HOVER, TOUCH, ZOOM & PAN CONTROLS -->
   <script type="text/javascript">
     <![CDATA[
     function showPopup(id) {
@@ -281,6 +326,22 @@
     function hidePopup(id) {
       var el = document.getElementById(id);
       if (el) el.classList.remove('active');
+    }
+
+    // Toggle popups on mobile touch tap
+    function togglePopup(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var isActive = el.classList.contains('active');
+      
+      // Hide all active popups
+      document.querySelectorAll('.popup.active').forEach(function(p) {
+        p.classList.remove('active');
+      });
+
+      if (!isActive) {
+        el.classList.add('active');
+      }
     }
 
     // ViewBox Zoom & Pan System
@@ -299,7 +360,6 @@
       var newW = curW * factor;
       var newH = curH * factor;
       
-      // Keep center point stable during zoom
       curX += (curW - newW) / 2;
       curY += (curH - newH) / 2;
       curW = newW;
@@ -316,10 +376,8 @@
       updateViewBox();
     }
 
-    // Drag / Pan Event Handlers
+    // Mouse Drag Handlers
     svg.addEventListener('mousedown', function(e) {
-      if (e.target.classList.contains('zoom-btn')) return;
-      
       isPanning = true;
       startX = e.clientX;
       startY = e.clientY;
@@ -328,7 +386,6 @@
 
     window.addEventListener('mousemove', function(e) {
       if (!isPanning) return;
-      
       var dx = e.clientX - startX;
       var dy = e.clientY - startY;
 
@@ -349,20 +406,56 @@
       svg.style.cursor = 'grab';
     });
 
- /*   
-    // Mousewheel Zoom
-    svg.addEventListener('wheel', function(e) {
-      e.preventDefault();
-      var factor = e.deltaY > 0 ? 1.1 : 0.9;
-      zoom(factor);
-    }, { passive: false });
+    // Mobile Touch Handlers (Single-finger pan + Two-finger pinch-zoom)
+    var initialTouchDist = 0;
 
-  */
-    
+    function getTouchDistance(touches) {
+      var dx = touches[0].clientX - touches[1].clientX;
+      var dy = touches[0].clientY - touches[1].clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    svg.addEventListener('touchstart', function(e) {
+      if (e.touches.length === 1) {
+        isPanning = true;
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+      } else if (e.touches.length === 2) {
+        isPanning = false;
+        initialTouchDist = getTouchDistance(e.touches);
+      }
+    }, { passive: true });
+
+    svg.addEventListener('touchmove', function(e) {
+      if (e.touches.length === 1 && isPanning) {
+        var dx = e.touches[0].clientX - startX;
+        var dy = e.touches[0].clientY - startY;
+
+        var scaleX = curW / svg.clientWidth;
+        var scaleY = curH / svg.clientHeight;
+
+        curX -= dx * scaleX;
+        curY -= dy * scaleY;
+
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+
+        updateViewBox();
+      } else if (e.touches.length === 2) {
+        var newDist = getTouchDistance(e.touches);
+        if (initialTouchDist > 0 && newDist > 0) {
+          var factor = initialTouchDist / newDist;
+          zoom(factor);
+          initialTouchDist = newDist;
+        }
+      }
+    }, { passive: true });
+
+    svg.addEventListener('touchend', function(e) {
+      if (e.touches.length < 2) initialTouchDist = 0;
+      if (e.touches.length === 0) isPanning = false;
+    }, { passive: true });
     ]]>
   </script>
-</svg>
-
-
 </body>
 </html>
