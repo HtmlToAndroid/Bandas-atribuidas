@@ -1,0 +1,364 @@
+<!doctype html>
+<html>
+<body>
+
+
+<svg id="main-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1100 960" width="100%" height="100%" style="background-color: #ffffff; font-family: 'Helvetica Neue', Arial, sans-serif; user-select: none; cursor: grab;">
+  <style>
+    /* ARRL Style Layout Typography */
+    .chart-title { fill: #000000; font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
+    .chart-subtitle { fill: #b91c1c; font-size: 14px; font-weight: 700; text-transform: uppercase; }
+    .band-label { fill: #000000; font-size: 18px; font-weight: 900; }
+    .freq-marker { fill: #444444; font-size: 10px; font-weight: 600; }
+    .power-label { fill: #1e293b; font-size: 11px; font-weight: 700; }
+    .seg-text { fill: #ffffff; font-size: 11px; font-weight: 800; pointer-events: none; text-shadow: 0 1px 2px rgba(0,0,0,0.6); }
+    
+    /* Interactive Segment Styling */
+    .segment { cursor: pointer; transition: all 0.15s ease-in-out; stroke: #ffffff; stroke-width: 1px; }
+    .segment:hover { opacity: 0.85; stroke: #000000; stroke-width: 2px; }
+
+    /* Pop-up Card Styling */
+    .popup { visibility: hidden; opacity: 0; transition: opacity 0.15s ease-in-out; pointer-events: none; }
+    .popup.active { visibility: visible; opacity: 1; }
+    .popup-bg { fill: #0f172a; stroke: #dc2626; stroke-width: 2px; rx: 6px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.5)); }
+    .popup-title { fill: #fef08a; font-size: 13px; font-weight: 800; }
+    .popup-body { fill: #f8fafc; font-size: 11px; font-weight: 400; }
+    .popup-bold { fill: #38bdf8; font-size: 11px; font-weight: 700; }
+
+    /* UI Controls */
+    .zoom-btn { cursor: pointer; fill: #1e293b; transition: fill 0.2s; }
+    .zoom-btn:hover { fill: #dc2626; }
+    .btn-text { fill: #ffffff; font-size: 16px; font-weight: bold; pointer-events: none; text-anchor: middle; dominant-baseline: central; }
+  </style>
+
+  <!-- ARRL HEADER BLOCK -->
+  <rect x="20" y="20" width="1060" height="70" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1" rx="4"/>
+  <text x="40" y="50" class="chart-title">CUADRO DE BANDAS DE RADIOAFICIONADO EN ESPAÑA</text>
+  <text x="40" y="72" class="chart-subtitle">FORMATO ESTILO ARRL • IARU REGIÓN 1 / CNAF • CLASE ÚNICA (HAREC)</text>
+  <text x="960" y="42" font-size="11" font-weight="bold" fill="#000" text-anchor="middle">POTENCIA HF MÁXIMA:</text>
+  <text x="960" y="62" font-size="14" font-weight="900" fill="#b91c1c" text-anchor="middle">1000 W PEP</text>
+
+  <!-- BANDS LAYER -->
+  <g id="bands-layer">
+    <!-- 160m -->
+    <g transform="translate(20, 120)">
+      <text x="0" y="28" class="band-label">160m</text>
+      <text x="60" y="-5" class="freq-marker">1.810 MHz</text>
+      <text x="810" y="-5" class="freq-marker">2.000 MHz</text>
+      <text x="830" y="28" class="power-label">200 W PEP</text>
+      <rect class="segment" x="60" y="5" width="112" height="36" fill="#ef4444" onmouseover="showPopup('p-160-cw')" onmouseout="hidePopup('p-160-cw')" />
+      <text x="116" y="27" class="seg-text" text-anchor="middle">CW</text>
+      <rect class="segment" x="172" y="5" width="20" height="36" fill="#2563eb" onmouseover="showPopup('p-160-digi')" onmouseout="hidePopup('p-160-digi')" />
+      <rect class="segment" x="192" y="5" width="628" height="36" fill="#10b981" onmouseover="showPopup('p-160-phone')" onmouseout="hidePopup('p-160-phone')" />
+      <text x="506" y="27" class="seg-text" text-anchor="middle">1.840 - 2.000 MHz (FONÍA / TODOS LOS MODOS)</text>
+    </g>
+
+    <!-- 80m -->
+    <g transform="translate(20, 190)">
+      <text x="0" y="28" class="band-label">80m</text>
+      <text x="60" y="-5" class="freq-marker">3.500 MHz</text>
+      <text x="810" y="-5" class="freq-marker">3.800 MHz</text>
+      <text x="830" y="28" class="power-label">1000 W PEP</text>
+      <rect class="segment" x="60" y="5" width="180" height="36" fill="#ef4444" onmouseover="showPopup('p-80-cw')" onmouseout="hidePopup('p-80-cw')" />
+      <text x="150" y="27" class="seg-text" text-anchor="middle">3.500 - 3.570 (CW)</text>
+      <rect class="segment" x="240" y="5" width="76" height="36" fill="#2563eb" onmouseover="showPopup('p-80-digi')" onmouseout="hidePopup('p-80-digi')" />
+      <text x="278" y="27" class="seg-text" text-anchor="middle">DIGI</text>
+      <rect class="segment" x="316" y="5" width="504" height="36" fill="#10b981" onmouseover="showPopup('p-80-phone')" onmouseout="hidePopup('p-80-phone')" />
+      <text x="568" y="27" class="seg-text" text-anchor="middle">3.600 - 3.800 MHz (FONÍA / ALL MODES)</text>
+    </g>
+
+    <!-- 60m -->
+    <g transform="translate(20, 260)">
+      <text x="0" y="28" class="band-label">60m</text>
+      <text x="60" y="-5" class="freq-marker">5.3515 MHz</text>
+      <text x="810" y="-5" class="freq-marker">5.3665 MHz</text>
+      <text x="830" y="28" class="power-label">15 W PIRE</text>
+      <rect class="segment" x="60" y="5" width="130" height="36" fill="#ef4444" onmouseover="showPopup('p-60-cw')" onmouseout="hidePopup('p-60-cw')" />
+      <text x="125" y="27" class="seg-text" text-anchor="middle">CW / NARROW</text>
+      <rect class="segment" x="190" y="5" width="590" height="36" fill="#10b981" onmouseover="showPopup('p-60-phone')" onmouseout="hidePopup('p-60-phone')" />
+      <text x="485" y="27" class="seg-text" text-anchor="middle">5.354 - 5.366 MHz (ALL MODES / USB)</text>
+      <rect class="segment" x="780" y="5" width="40" height="36" fill="#a855f7" onmouseover="showPopup('p-60-weak')" onmouseout="hidePopup('p-60-weak')" />
+    </g>
+
+    <!-- 40m -->
+    <g transform="translate(20, 330)">
+      <text x="0" y="28" class="band-label">40m</text>
+      <text x="60" y="-5" class="freq-marker">7.000 MHz</text>
+      <text x="810" y="-5" class="freq-marker">7.200 MHz</text>
+      <text x="830" y="28" class="power-label">1000 W PEP</text>
+      <rect class="segment" x="60" y="5" width="154" height="36" fill="#ef4444" onmouseover="showPopup('p-40-cw')" onmouseout="hidePopup('p-40-cw')" />
+      <text x="137" y="27" class="seg-text" text-anchor="middle">7.000 - 7.040 (CW)</text>
+      <rect class="segment" x="214" y="5" width="38" height="36" fill="#2563eb" onmouseover="showPopup('p-40-digi')" onmouseout="hidePopup('p-40-digi')" />
+      <text x="233" y="27" class="seg-text" text-anchor="middle">DIGI</text>
+      <rect class="segment" x="252" y="5" width="568" height="36" fill="#10b981" onmouseover="showPopup('p-40-phone')" onmouseout="hidePopup('p-40-phone')" />
+      <text x="536" y="27" class="seg-text" text-anchor="middle">7.050 - 7.200 MHz (FONÍA / ALL MODES)</text>
+    </g>
+
+    <!-- 30m -->
+    <g transform="translate(20, 400)">
+      <text x="0" y="28" class="band-label">30m</text>
+      <text x="60" y="-5" class="freq-marker">10.100 MHz</text>
+      <text x="810" y="-5" class="freq-marker">10.150 MHz</text>
+      <text x="830" y="28" class="power-label">1000 W PEP</text>
+      <rect class="segment" x="60" y="5" width="450" height="36" fill="#ef4444" onmouseover="showPopup('p-30-cw')" onmouseout="hidePopup('p-30-cw')" />
+      <text x="285" y="27" class="seg-text" text-anchor="middle">10.100 - 10.130 MHz (CW ONLY)</text>
+      <rect class="segment" x="510" y="5" width="310" height="36" fill="#2563eb" onmouseover="showPopup('p-30-digi')" onmouseout="hidePopup('p-30-digi')" />
+      <text x="665" y="27" class="seg-text" text-anchor="middle">10.130 - 10.150 (DIGITAL MODES)</text>
+    </g>
+
+    <!-- 20m -->
+    <g transform="translate(20, 470)">
+      <text x="0" y="28" class="band-label">20m</text>
+      <text x="60" y="-5" class="freq-marker">14.000 MHz</text>
+      <text x="810" y="-5" class="freq-marker">14.350 MHz</text>
+      <text x="830" y="28" class="power-label">1000 W PEP</text>
+      <rect class="segment" x="60" y="5" width="152" height="36" fill="#ef4444" onmouseover="showPopup('p-20-cw')" onmouseout="hidePopup('p-20-cw')" />
+      <text x="136" y="27" class="seg-text" text-anchor="middle">14.000 - 14.070 (CW)</text>
+      <rect class="segment" x="212" y="5" width="64" height="36" fill="#2563eb" onmouseover="showPopup('p-20-digi')" onmouseout="hidePopup('p-20-digi')" />
+      <text x="244" y="27" class="seg-text" text-anchor="middle">DIGI</text>
+      <rect class="segment" x="276" y="5" width="10" height="36" fill="#f59e0b" onmouseover="showPopup('p-20-beacon')" onmouseout="hidePopup('p-20-beacon')" />
+      <rect class="segment" x="286" y="5" width="534" height="36" fill="#10b981" onmouseover="showPopup('p-20-phone')" onmouseout="hidePopup('p-20-phone')" />
+      <text x="553" y="27" class="seg-text" text-anchor="middle">14.101 - 14.350 MHz (FONÍA / ALL MODES)</text>
+    </g>
+
+    <!-- 17m -->
+    <g transform="translate(20, 540)">
+      <text x="0" y="28" class="band-label">17m</text>
+      <text x="60" y="-5" class="freq-marker">18.068 MHz</text>
+      <text x="810" y="-5" class="freq-marker">18.168 MHz</text>
+      <text x="830" y="28" class="power-label">1000 W PEP</text>
+      <rect class="segment" x="60" y="5" width="200" height="36" fill="#ef4444" onmouseover="showPopup('p-17-cw')" onmouseout="hidePopup('p-17-cw')" />
+      <text x="160" y="27" class="seg-text" text-anchor="middle">18.068 - 18.095 (CW)</text>
+      <rect class="segment" x="260" y="5" width="100" height="36" fill="#2563eb" onmouseover="showPopup('p-17-digi')" onmouseout="hidePopup('p-17-digi')" />
+      <text x="310" y="27" class="seg-text" text-anchor="middle">DIGI</text>
+      <rect class="segment" x="360" y="5" width="16" height="36" fill="#f59e0b" onmouseover="showPopup('p-17-beacon')" onmouseout="hidePopup('p-17-beacon')" />
+      <rect class="segment" x="376" y="5" width="444" height="36" fill="#10b981" onmouseover="showPopup('p-17-phone')" onmouseout="hidePopup('p-17-phone')" />
+      <text x="598" y="27" class="seg-text" text-anchor="middle">18.111 - 18.168 MHz (FONÍA / ALL MODES)</text>
+    </g>
+
+    <!-- 15m -->
+    <g transform="translate(20, 610)">
+      <text x="0" y="28" class="band-label">15m</text>
+      <text x="60" y="-5" class="freq-marker">21.000 MHz</text>
+      <text x="810" y="-5" class="freq-marker">21.450 MHz</text>
+      <text x="830" y="28" class="power-label">1000 W PEP</text>
+      <rect class="segment" x="60" y="5" width="120" height="36" fill="#ef4444" onmouseover="showPopup('p-15-cw')" onmouseout="hidePopup('p-15-cw')" />
+      <text x="120" y="27" class="seg-text" text-anchor="middle">21.000 - 21.070 (CW)</text>
+      <rect class="segment" x="180" y="5" width="70" height="36" fill="#2563eb" onmouseover="showPopup('p-15-digi')" onmouseout="hidePopup('p-15-digi')" />
+      <text x="215" y="27" class="seg-text" text-anchor="middle">DIGI</text>
+      <rect class="segment" x="250" y="5" width="570" height="36" fill="#10b981" onmouseover="showPopup('p-15-phone')" onmouseout="hidePopup('p-15-phone')" />
+      <text x="535" y="27" class="seg-text" text-anchor="middle">21.110 - 21.450 MHz (FONÍA / ALL MODES)</text>
+    </g>
+
+    <!-- 12m -->
+    <g transform="translate(20, 680)">
+      <text x="0" y="28" class="band-label">12m</text>
+      <text x="60" y="-5" class="freq-marker">24.890 MHz</text>
+      <text x="810" y="-5" class="freq-marker">24.990 MHz</text>
+      <text x="830" y="28" class="power-label">1000 W PEP</text>
+      <rect class="segment" x="60" y="5" width="190" height="36" fill="#ef4444" onmouseover="showPopup('p-12-cw')" onmouseout="hidePopup('p-12-cw')" />
+      <text x="155" y="27" class="seg-text" text-anchor="middle">24.890 - 24.915 (CW)</text>
+      <rect class="segment" x="250" y="5" width="110" height="36" fill="#2563eb" onmouseover="showPopup('p-12-digi')" onmouseout="hidePopup('p-12-digi')" />
+      <text x="305" y="27" class="seg-text" text-anchor="middle">DIGI</text>
+      <rect class="segment" x="360" y="5" width="15" height="36" fill="#f59e0b" onmouseover="showPopup('p-12-beacon')" onmouseout="hidePopup('p-12-beacon')" />
+      <rect class="segment" x="375" y="5" width="445" height="36" fill="#10b981" onmouseover="showPopup('p-12-phone')" onmouseout="hidePopup('p-12-phone')" />
+      <text x="597" y="27" class="seg-text" text-anchor="middle">24.931 - 24.990 MHz (FONÍA / ALL MODES)</text>
+    </g>
+
+    <!-- 10m -->
+    <g transform="translate(20, 750)">
+      <text x="0" y="28" class="band-label">10m</text>
+      <text x="60" y="-5" class="freq-marker">28.000 MHz</text>
+      <text x="810" y="-5" class="freq-marker">29.700 MHz</text>
+      <text x="830" y="28" class="power-label">1000 W PEP</text>
+      <rect class="segment" x="60" y="5" width="31" height="36" fill="#ef4444" onmouseover="showPopup('p-10-cw')" onmouseout="hidePopup('p-10-cw')" />
+      <rect class="segment" x="91" y="5" width="53" height="36" fill="#2563eb" onmouseover="showPopup('p-10-digi')" onmouseout="hidePopup('p-10-digi')" />
+      <text x="117" y="27" class="seg-text" text-anchor="middle">DIGI</text>
+      <rect class="segment" x="144" y="5" width="16" height="36" fill="#f59e0b" onmouseover="showPopup('p-10-beacon')" onmouseout="hidePopup('p-10-beacon')" />
+      <rect class="segment" x="160" y="5" width="475" height="36" fill="#10b981" onmouseover="showPopup('p-10-phone')" onmouseout="hidePopup('p-10-phone')" />
+      <text x="397" y="27" class="seg-text" text-anchor="middle">28.225 - 29.300 MHz (ALL MODES / SSB / FM SIMPLEX)</text>
+      <rect class="segment" x="635" y="5" width="93" height="36" fill="#0284c7" onmouseover="showPopup('p-10-sat')" onmouseout="hidePopup('p-10-sat')" />
+      <text x="681" y="27" class="seg-text" text-anchor="middle">SATÉLITES</text>
+      <rect class="segment" x="728" y="5" width="92" height="36" fill="#64748b" onmouseover="showPopup('p-10-rep')" onmouseout="hidePopup('p-10-rep')" />
+      <text x="774" y="27" class="seg-text" text-anchor="middle">REPETIDORES FM</text>
+    </g>
+  </g>
+
+  <!-- LEGEND LAYER -->
+  <g transform="translate(20, 835)">
+    <rect x="0" y="0" width="1060" height="55" fill="#f8fafc" stroke="#cbd5e1" rx="4"/>
+    <text x="15" y="32" font-size="12" font-weight="bold" fill="#000">LEYENDA DE MODOS:</text>
+    <rect x="150" y="18" width="22" height="22" rx="3" fill="#ef4444" />
+    <text x="180" y="33" font-size="12" font-weight="bold" fill="#333">CW (≤ 200 Hz)</text>
+    <rect x="310" y="18" width="22" height="22" rx="3" fill="#2563eb" />
+    <text x="340" y="33" font-size="12" font-weight="bold" fill="#333">Modos Digitales (≤ 500 Hz)</text>
+    <rect x="530" y="18" width="22" height="22" rx="3" fill="#10b981" />
+    <text x="560" y="33" font-size="12" font-weight="bold" fill="#333">Fonía / All Modes (≤ 2700 Hz)</text>
+    <rect x="780" y="18" width="22" height="22" rx="3" fill="#f59e0b" />
+    <text x="810" y="33" font-size="12" font-weight="bold" fill="#333">Balizas IBP</text>
+    <rect x="910" y="18" width="22" height="22" rx="3" fill="#0284c7" />
+    <text x="940" y="33" font-size="12" font-weight="bold" fill="#333">Satélites / FM</text>
+  </g>
+
+  <!-- REPOSITIONED ZOOM CONTROLS (Bottom touching box baseline y=90) -->
+  <g transform="translate(720, 52)">
+    <rect class="zoom-btn" x="0" y="0" width="32" height="32" rx="5" onclick="zoom(0.8)"/>
+    <text x="16" y="16" class="btn-text">+</text>
+    
+    <rect class="zoom-btn" x="38" y="0" width="32" height="32" rx="5" onclick="zoom(1.25)"/>
+    <text x="54" y="16" class="btn-text">-</text>
+
+    <rect class="zoom-btn" x="76" y="0" width="50" height="32" rx="5" onclick="resetZoom()"/>
+    <text x="101" y="16" class="btn-text" font-size="11">RESET</text>
+  </g>
+
+  <!-- TOPMOST POPUP LAYER -->
+  <g id="popups-layer">
+    <!-- 160m Popups -->
+    <g id="p-160-cw" class="popup" transform="translate(80, 165)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">160m CW (1810 – 1838 kHz)</text><text x="12" y="38" class="popup-body">Ancho de banda máx.: 200 Hz</text><text x="12" y="56" class="popup-bold">Centro QRP CW: 1836 kHz | Atribución Primaria</text></g>
+    <g id="p-160-digi" class="popup" transform="translate(140, 165)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">160m Digitales (1838 – 1840 kHz)</text><text x="12" y="38" class="popup-body">Ancho de banda máx.: 500 Hz</text><text x="12" y="56" class="popup-bold">Modos digitales estrechos (FT8, RTTY)</text></g>
+    <g id="p-160-phone" class="popup" transform="translate(420, 165)"><rect class="popup-bg" width="310" height="75"/><text x="12" y="20" class="popup-title">160m Fonía / All Modes (1840 – 2000 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 2700 Hz | LSB Dial Mínimo: 1843 kHz</text><text x="12" y="56" class="popup-bold">1850-2000 kHz: Atribución Secundaria en España</text></g>
+
+    <!-- 80m Popups -->
+    <g id="p-80-cw" class="popup" transform="translate(80, 235)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">80m Telegrafía (3500 – 3570 kHz)</text><text x="12" y="38" class="popup-body">BW máx.: 200 Hz | QRS (Lento): 3555 kHz</text><text x="12" y="56" class="popup-bold">Centro QRP CW: 3560 kHz</text></g>
+    <g id="p-80-digi" class="popup" transform="translate(220, 235)"><rect class="popup-bg" width="290" height="75"/><text x="12" y="20" class="popup-title">80m Digitales (3570 – 3600 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 500 Hz | FT8 / RTTY / Unattended</text><text x="12" y="56" class="popup-bold">3590-3600 kHz: Estaciones automáticas</text></g>
+    <g id="p-80-phone" class="popup" transform="translate(440, 235)"><rect class="popup-bg" width="310" height="85"/><text x="12" y="20" class="popup-title">80m Fonía / All Modes (3600 – 3800 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 2700 Hz | Voz Digital: 3630 kHz</text><text x="12" y="54" class="popup-body">SSTV / Imagen: 3735 kHz</text><text x="12" y="70" class="popup-bold">3760 kHz: Emergencia IARU Región 1</text></g>
+
+    <!-- 60m Popups -->
+    <g id="p-60-cw" class="popup" transform="translate(80, 305)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">60m CW (5351,5 – 5354,0 kHz)</text><text x="12" y="38" class="popup-body">Ancho de banda máx.: 200 Hz</text><text x="12" y="56" class="popup-bold">Segmento telegrafía y modos estrechos</text></g>
+    <g id="p-60-phone" class="popup" transform="translate(370, 305)"><rect class="popup-bg" width="310" height="85"/><text x="12" y="20" class="popup-title">60m All Modes (5354 – 5366 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 2700 Hz | USB Recomendado</text><text x="12" y="54" class="popup-body">Dial USB Máximo: 5363 kHz</text><text x="12" y="70" class="popup-bold">¡SIN CONCURSOS! (WRC-15)</text></g>
+    <g id="p-60-weak" class="popup" transform="translate(540, 305)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">60m Señal Débil (5366 – 5366,5 kHz)</text><text x="12" y="38" class="popup-body">Ancho de banda máx.: 20 Hz</text><text x="12" y="56" class="popup-bold">Exclusivo modos ultra-estrechos</text></g>
+
+    <!-- 40m Popups -->
+    <g id="p-40-cw" class="popup" transform="translate(80, 375)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">40m Telegrafía (7000 – 7040 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 200 Hz | Centro QRP: 7030 kHz</text><text x="12" y="56" class="popup-bold">Atribución Primaria Mundial</text></g>
+    <g id="p-40-digi" class="popup" transform="translate(200, 375)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">40m Digitales (7040 – 7050 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 500 Hz | FT8 / RTTY</text><text x="12" y="56" class="popup-bold">7047-7050 kHz: Automáticas (Unattended)</text></g>
+    <g id="p-40-phone" class="popup" transform="translate(440, 375)"><rect class="popup-bg" width="310" height="85"/><text x="12" y="20" class="popup-title">40m Fonía / All Modes (7050 – 7200 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 2700 Hz | LSB Dial Mínimo: 7053 kHz</text><text x="12" y="54" class="popup-body">7070 kHz: Voz Digital | 7165 kHz: SSTV</text><text x="12" y="70" class="popup-bold">7110 kHz: Emergencia IARU Región 1</text></g>
+
+    <!-- 30m Popups -->
+    <g id="p-30-cw" class="popup" transform="translate(80, 445)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">30m CW (10100 – 10130 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 200 Hz | Centro QRP: 10116 kHz</text><text x="12" y="56" class="popup-bold">¡PROHIBIDA FONÍA Y CONCURSOS!</text></g>
+    <g id="p-30-digi" class="popup" transform="translate(470, 445)"><rect class="popup-bg" width="290" height="75"/><text x="12" y="20" class="popup-title">30m Digitales (10130 – 10150 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 500 Hz | FT8 / RTTY / PSK</text><text x="12" y="56" class="popup-bold">Atribución Secundaria en España</text></g>
+
+    <!-- 20m Popups -->
+    <g id="p-20-cw" class="popup" transform="translate(80, 515)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">20m Telegrafía (14000 – 14070 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 200 Hz | QRP: 14060 kHz</text><text x="12" y="56" class="popup-bold">14055 kHz: Centro QRS (Lento)</text></g>
+    <g id="p-20-digi" class="popup" transform="translate(200, 515)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">20m Digitales (14070 – 14099 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 500 Hz | FT8 (14074 kHz)</text><text x="12" y="56" class="popup-bold">14089-14099 kHz: Automáticas</text></g>
+    <g id="p-20-beacon" class="popup" transform="translate(220, 515)"><rect class="popup-bg" width="280" height="65"/><text x="12" y="20" class="popup-title">Balizas IBP (14099 – 14101 kHz)</text><text x="12" y="42" class="popup-bold">EXCLUSIVO RED MUNDIAL DE BALIZAS</text></g>
+    <g id="p-20-phone" class="popup" transform="translate(440, 515)"><rect class="popup-bg" width="310" height="85"/><text x="12" y="20" class="popup-title">20m Fonía / All Modes (14101 – 14350 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 2700 Hz | SSTV: 14230 kHz</text><text x="12" y="54" class="popup-body">14195 kHz: Prioridad DX-pediciones</text><text x="12" y="70" class="popup-bold">14300 kHz: Emergencia Global</text></g>
+
+    <!-- 17m Popups -->
+    <g id="p-17-cw" class="popup" transform="translate(80, 585)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">17m Telegrafía (18068 – 18095 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 200 Hz | QRP: 18086 kHz</text><text x="12" y="56" class="popup-bold">¡PROHIBIDOS LOS CONCURSOS!</text></g>
+    <g id="p-17-digi" class="popup" transform="translate(240, 585)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">17m Digitales (18095 – 18109 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 500 Hz | FT8 (18100 kHz)</text><text x="12" y="56" class="popup-bold">¡PROHIBIDOS LOS CONCURSOS!</text></g>
+    <g id="p-17-beacon" class="popup" transform="translate(280, 585)"><rect class="popup-bg" width="280" height="65"/><text x="12" y="20" class="popup-title">Balizas IBP (18109 – 18111 kHz)</text><text x="12" y="42" class="popup-bold">EXCLUSIVO RED MUNDIAL DE BALIZAS</text></g>
+    <g id="p-17-phone" class="popup" transform="translate(470, 585)"><rect class="popup-bg" width="310" height="85"/><text x="12" y="20" class="popup-title">17m Fonía / All Modes (18111 – 18168 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 2700 Hz | QRP SSB: 18130 kHz</text><text x="12" y="54" class="popup-body">Voz Digital: 18150 kHz</text><text x="12" y="70" class="popup-bold">18160 kHz: Emergencia IARU Región 1</text></g>
+
+    <!-- 15m Popups -->
+    <g id="p-15-cw" class="popup" transform="translate(80, 655)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">15m Telegrafía (21000 – 21070 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 200 Hz | QRP CW: 21060 kHz</text><text x="12" y="56" class="popup-bold">21055 kHz: Centro QRS (Lento)</text></g>
+    <g id="p-15-digi" class="popup" transform="translate(180, 655)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">15m Digitales (21070 – 21110 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 500 Hz | FT8 (21074 kHz)</text><text x="12" y="56" class="popup-bold">21090-21110 kHz: Automáticas</text></g>
+    <g id="p-15-phone" class="popup" transform="translate(440, 655)"><rect class="popup-bg" width="310" height="85"/><text x="12" y="20" class="popup-title">15m Fonía / All Modes (21110 – 21450 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 2700 Hz | SSTV: 21340 kHz</text><text x="12" y="54" class="popup-body">QRP SSB: 21285 kHz | DV: 21180 kHz</text><text x="12" y="70" class="popup-bold">21360 kHz: Emergencia Global</text></g>
+
+    <!-- 12m Popups -->
+    <g id="p-12-cw" class="popup" transform="translate(80, 725)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">12m Telegrafía (24890 – 24915 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 200 Hz | QRP CW: 24906 kHz</text><text x="12" y="56" class="popup-bold">¡PROHIBIDOS LOS CONCURSOS!</text></g>
+    <g id="p-12-digi" class="popup" transform="translate(220, 725)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">12m Digitales (24915 – 24929 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 500 Hz | FT8 (24915 kHz)</text><text x="12" y="56" class="popup-bold">¡PROHIBIDOS LOS CONCURSOS!</text></g>
+    <g id="p-12-beacon" class="popup" transform="translate(270, 725)"><rect class="popup-bg" width="280" height="65"/><text x="12" y="20" class="popup-title">Balizas IBP (24929 – 24931 kHz)</text><text x="12" y="42" class="popup-bold">EXCLUSIVO RED MUNDIAL DE BALIZAS</text></g>
+    <g id="p-12-phone" class="popup" transform="translate(470, 725)"><rect class="popup-bg" width="310" height="75"/><text x="12" y="20" class="popup-title">12m Fonía / All Modes (24931 – 24990 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 2700 Hz | QRP SSB: 24950 kHz</text><text x="12" y="56" class="popup-bold">24960 kHz: Voz Digital (DV)</text></g>
+
+    <!-- 10m Popups -->
+    <g id="p-10-cw" class="popup" transform="translate(80, 720)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">10m Telegrafía (28000 – 28070 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 200 Hz | QRP CW: 28060 kHz</text><text x="12" y="56" class="popup-bold">28055 kHz: Centro QRS (Lento)</text></g>
+    <g id="p-10-digi" class="popup" transform="translate(100, 720)"><rect class="popup-bg" width="280" height="75"/><text x="12" y="20" class="popup-title">10m Digitales (28070 – 28190 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 500 Hz | FT8 (28074 kHz)</text><text x="12" y="56" class="popup-bold">28120-28150 kHz: Automáticas</text></g>
+    <g id="p-10-beacon" class="popup" transform="translate(120, 720)"><rect class="popup-bg" width="280" height="65"/><text x="12" y="20" class="popup-title">Balizas 10m (28190 – 28225 kHz)</text><text x="12" y="42" class="popup-bold">Balizas continuas e IBP exclusivas</text></g>
+    <g id="p-10-phone" class="popup" transform="translate(320, 720)"><rect class="popup-bg" width="320" height="85"/><text x="12" y="20" class="popup-title">10m All Modes / Fonía (28225 – 29300 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 2700 Hz (hasta 29000 kHz)</text><text x="12" y="54" class="popup-body">FM Simplex: 29100 – 29200 kHz (10 kHz steps)</text><text x="12" y="70" class="popup-bold">28680 kHz: SSTV | 28330 kHz: Voz Digital</text></g>
+    <g id="p-10-sat" class="popup" transform="translate(540, 720)"><rect class="popup-bg" width="290" height="65"/><text x="12" y="20" class="popup-title">Satélites (29300 – 29510 kHz)</text><text x="12" y="42" class="popup-bold">Enlaces de Satélite de Radioaficionado</text></g>
+    <g id="p-10-rep" class="popup" transform="translate(560, 720)"><rect class="popup-bg" width="310" height="85"/><text x="12" y="20" class="popup-title">FM Repetidores &amp; Loro (29520 – 29700 kHz)</text><text x="12" y="38" class="popup-body">BW máx: 6000 Hz | Entradas: 29520–29590 kHz</text><text x="12" y="54" class="popup-body">Llamada FM Simplex: 29600 kHz</text><text x="12" y="70" class="popup-bold">Repetidor Simplex (Loro): 29610 kHz</text></g>
+  </g>
+
+  <!-- JAVASCRIPT FOR HOVER, ZOOM & PAN CONTROLS -->
+  <script type="text/javascript">
+    <![CDATA[
+    function showPopup(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.add('active');
+    }
+
+    function hidePopup(id) {
+      var el = document.getElementById(id);
+      if (el) el.classList.remove('active');
+    }
+
+    // ViewBox Zoom & Pan System
+    var svg = document.getElementById('main-svg');
+    var origW = 1100, origH = 960;
+    var curW = origW, curH = origH;
+    var curX = 0, curY = 0;
+    var isPanning = false;
+    var startX = 0, startY = 0;
+
+    function updateViewBox() {
+      svg.setAttribute('viewBox', curX + ' ' + curY + ' ' + curW + ' ' + curH);
+    }
+
+    function zoom(factor) {
+      var newW = curW * factor;
+      var newH = curH * factor;
+      
+      // Keep center point stable during zoom
+      curX += (curW - newW) / 2;
+      curY += (curH - newH) / 2;
+      curW = newW;
+      curH = newH;
+
+      updateViewBox();
+    }
+
+    function resetZoom() {
+      curW = origW;
+      curH = origH;
+      curX = 0;
+      curY = 0;
+      updateViewBox();
+    }
+
+    // Drag / Pan Event Handlers
+    svg.addEventListener('mousedown', function(e) {
+      if (e.target.classList.contains('zoom-btn')) return;
+      
+      isPanning = true;
+      startX = e.clientX;
+      startY = e.clientY;
+      svg.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mousemove', function(e) {
+      if (!isPanning) return;
+      
+      var dx = e.clientX - startX;
+      var dy = e.clientY - startY;
+
+      var scaleX = curW / svg.clientWidth;
+      var scaleY = curH / svg.clientHeight;
+
+      curX -= dx * scaleX;
+      curY -= dy * scaleY;
+
+      startX = e.clientX;
+      startY = e.clientY;
+
+      updateViewBox();
+    });
+
+    window.addEventListener('mouseup', function() {
+      isPanning = false;
+      svg.style.cursor = 'grab';
+    });
+
+    // Mousewheel Zoom
+    svg.addEventListener('wheel', function(e) {
+      e.preventDefault();
+      var factor = e.deltaY > 0 ? 1.1 : 0.9;
+      zoom(factor);
+    }, { passive: false });
+    ]]>
+  </script>
+</svg>
+
+
+</body>
+</html>
